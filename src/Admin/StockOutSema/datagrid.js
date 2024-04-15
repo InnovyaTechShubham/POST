@@ -101,7 +101,7 @@ function StockOutSema() {
   };
   gethistory();
 
-  const rows = [];
+  // const rows = [];
 
   const getprodnew = async () => {
     try {
