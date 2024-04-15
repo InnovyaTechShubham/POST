@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -23,14 +22,6 @@ function createData(hospitalname, address, ceanumber, phone, state, district) {
   return { hospitalname, address, ceanumber, phone, state, district };
 }
 
-
-
-
-
-
-
-
-
 function TotalHospital() {
   const [id, setId] = useState([]);
 
@@ -54,77 +45,21 @@ function TotalHospital() {
     window.location = "/stockout"
   }
   
+  const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
 
-
-
-
-  // const gethistory = async () => {
-  //   try {
-
-  //     const url = `http://localhost:4000/stocks`;
-  //     const { data } = await axios.get(url);
-  //     console.log("History is: ", data);
-  //     const batchno = new Array(data.document.length)
-  //     const productid = new Array(data.document.length)
-  //     const unitcost = new Array(data.document.length)
-
-  //     const totalquantity = new Array(data.document.length)
-  //     const entrydate = new Array(data.document.length)
-  //     const manufacturingdate = new Array(data.document.length)
-
-  //     for (let i = 0; i < data.document.length; i++) {
-  //       batchno[i] = data.document[i].batchno;
-  //       productid[i] = data.document[i].productid;
-  //       unitcost[i] = data.document[i].unitcost;
-
-  //       totalquantity[i] = data.document[i].totalquantity;
-  //       entrydate[i] = data.document[i].doe;
-  //       manufacturingdate[i] = data.document[i].dom;
-
-
-
-
-  //     }
-  //     setBatchNo(batchno);
-  //     setUnitCost(unitcost);
-  //     setTotalQuantity(totalquantity);
-  //     setDoe(entrydate);
-
-  //     setDom(manufacturingdate);
-
-  //     setProductId(productid);
-
-
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-
-  // };
-  // gethistory();
-
-
-  const rows = [
-
-
-  ];
-
-
+  const rows = [];
 
   const gethospital = async () => {
     try {
-
-      const url = `http://localhost:4000/hospitals`;
+      const url = `${BASE_URL}/hospitals`;
       const { data } = await axios.get(url);
-      const id = new Array(data.document.length)
-      const hospitalname = new Array(data.document.length)
-      const address = new Array(data.document.length)
-      const ceanumber = new Array(data.document.length)
-      const phone = new Array(data.document.length)
-      const state = new Array(data.document.length)
-      const district = new Array(data.document.length)
-
-
-      
+      const id = new Array(data.document.length);
+      const hospitalname = new Array(data.document.length);
+      const address = new Array(data.document.length);
+      const ceanumber = new Array(data.document.length);
+      const phone = new Array(data.document.length);
+      const state = new Array(data.document.length);
+      const district = new Array(data.document.length);
      
       for (let i = 0; i < data.document.length; i++) {
             id[i] = data.document[i].id;
@@ -142,41 +77,27 @@ function TotalHospital() {
       setPhone(phone);
       setState(state);
       setDistrict(district);
-
       
-      
-      console.log("DAta is ours", data);
-
+      console.log("Data is ours", data);
     } catch (error) {
       console.log(error);
     }
-
   };
-
 
   gethospital();
 
-
-//Pushing The data into the Tables
   for (let i = 0; i < id.length; i++) {
-    
-      rows.push(
-        createData(
-          hospitalname[i],
-          address[i],
-          ceanumber[i],
-          phone[i],
-          state[i],
-          district[i],
-        )
-      );
-
-    
-   
+    rows.push(
+      createData(
+        hospitalname[i],
+        address[i],
+        ceanumber[i],
+        phone[i],
+        state[i],
+        district[i]
+      )
+    );
   }
-
-
-
 
   return (
     <main className='main-container'>

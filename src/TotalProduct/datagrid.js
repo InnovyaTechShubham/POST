@@ -51,15 +51,9 @@ const randomRole = () => {
   return randomArrayItem(roles);
 };
 
-
-
-
-
 //Add The required Information
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
-
-
 
   //Function Not Working ((Later Add API to add new Record))
   //Function to add new Record
@@ -71,9 +65,6 @@ function EditToolbar(props) {
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
     }));
   };
-
-
-
 
   //AddRecord Button
   return (
@@ -90,10 +81,11 @@ export default function FullFeaturedCrudGrid() {
       const hospitalid = localStorage.getItem("hospitalid");
 
       let newrows = [];
-      const url = `http://localhost:4000/products`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/products`;
       const { data } = await axios.get(url);
       for(let i = 0;i<data.document.length;i++){
-        if(data.document[i].hospitalid == hospitalid){
+        if(data.document[i].hospitalid === hospitalid){
           newrows.push(data.document[i]);
           }
       }    
@@ -108,9 +100,6 @@ export default function FullFeaturedCrudGrid() {
   //const [rows, setRows] = React.useState(data); //Process data without $oid
   const [rowModesModel, setRowModesModel] = React.useState({});
   const [count, setCount] = React.useState(0);
-
-
-
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -151,11 +140,13 @@ export default function FullFeaturedCrudGrid() {
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
+
   const onRowsSelectionHandler = (id) => {
     const selectedIDs = new Set(id);
     const selectedRowsData = id.map((id) => rows.find((row) => row.id === id));
     setCount(selectedIDs)
   };
+
   //On selection We Get The Row Data //Print Button
   const handlePrint = () => {
     console.log(count)
@@ -191,68 +182,52 @@ export default function FullFeaturedCrudGrid() {
 
   };
 
-
-
-
-
-
   //Defining The columns from the JSON Object and include the Last two Buttons in that.
   const columns = [
-
-   
     {
       field: 'producttype',
       headerName: 'Product Type',
       headerAlign:'left',
       width: 150,
       align:'left',
-
       editable: true,
     },
     {
       field: 'name',
       headerName: 'Product Name',
-
       width: 200,
       editable: true,
     },
     {
       field: 'category',
       headerName: 'Category',
-
       width: 120,
       editable: true,
     },
     {
       field: 'manufacturer',
       headerName: 'Manufacturer',
-
       width: 150,
       editable: true,
     },
     {
       field: 'origin',
       headerName: 'Origin',
-
       width: 150,
       editable: true,
     },
-
     {
       field: 'subcategory',
       headerName: 'Sub Category',
       width: 150,
       editable: true,
-
     },
     {
       field: 'emergencytype',
       headerName: 'Emergency Type',
       width: 150,
       editable: true,
-
     },
-  
   ];
 
   return (
@@ -277,18 +252,14 @@ export default function FullFeaturedCrudGrid() {
                       color: 'text.primary',
                     },
                   }}
-
                 >
                   
                   <div className='row mt-3'>
-
                     <div className='col'>
                       <Stack direction="row" spacing={5}>
                         <h4>
                           Total Products
                         </h4>
-                       
-                        
                       </Stack>
                     </div>
                   </div>
@@ -299,22 +270,10 @@ export default function FullFeaturedCrudGrid() {
                       color="primary"
                       startIcon={<BsFilter />}
                       variant="contained"
-                     
                       onClick={handlePrint}
                     >
                       Filter
                     </Button>
-                    
-                    {/* <Button
-                      color="primary"
-                      startIcon={<SaveIcon />}
-                      variant="contained"
-                      
-                      onClick={handlePrint}
-                    >
-                      Export To PDF
-                    </Button> */}
-                    
                   </div>
                   
                   <br />
@@ -325,32 +284,19 @@ export default function FullFeaturedCrudGrid() {
                     editMode="row"
                     checkboxSelection
                     onRowSelectionModelChange={(id) => onRowsSelectionHandler(id)}
-
-
                     rowModesModel={rowModesModel}
                     onRowModesModelChange={handleRowModesModelChange}
                     onRowEditStop={handleRowEditStop}
                     processRowUpdate={processRowUpdate}
-                    slots={{
-                      toolbar: EditToolbar,
-                    }}
-                    slotProps={{
-                      toolbar: { setRows, setRowModesModel },
-                    }}
+                    slots={{ toolbar: EditToolbar }}
+                    slotProps={{ toolbar: { setRows, setRowModesModel } }}
                   />
-
                 </Box>
-
               </div>
             </div>
-
           </div>
-
         </section>
       </div >
     </main >
-
-
   );
-
 }

@@ -1,11 +1,10 @@
 import { useState, React, CSSProperties } from 'react'
 import ClipLoader from "react-spinners/ClipLoader";
 import { useFormik } from "formik";
-//import "./HospitalRegistration.css";
 import { Button } from "react-bootstrap";
 import { loginAuth } from "./LoginAuth.js";
 import Axios from "axios"
-import { useNavigate, } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -21,18 +20,11 @@ const override: CSSProperties = {
 const initialValues = {
     email: "",
     password: "",
-
-
-
 };
-
 
 const Login = () => {
     const [open, setOpen] = useState(false);
-    let [loading, setLoading] = useState(false);
-    let [color, setColor] = useState("#ffffff");
-
-
+    const [loading, setLoading] = useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -58,81 +50,23 @@ const Login = () => {
         handleBlur,
         handleChange,
         handleSubmit,
-
         resetForm,
     } = useFormik({
         initialValues,
         validationSchema: loginAuth,
-        onSubmit: (values, action) => {
-            const loadUsers = async () => {
-                let flag = 0;
-
+        onSubmit: async (values, action) => {
+            try {
                 setLoading(true);
-                const url = "http://localhost:4000/users";
-                const { data } = await Axios.get(url);
-
-                for (let a = 0; a < data.document.length; a++) {
-                    if (values.email == data.document[a].email && values.password == data.document[a].password) {
-                        localStorage.setItem("id", data.document[a]._id);
-                        localStorage.setItem("email", data.document[a].email);
-                        localStorage.setItem("hospitalname", data.document[a].hospitalname);
-                        console.log("User Exist and his id is " + data.document[a]._id);
-                        const userData = localStorage.getItem("id");
-
-                        flag = 1;
-                        console.log("flag is " + flag);
-
-                        //Needs to Implement Other Test Cases Too. 
-                        const loadhos = async () => {
-                            const url = "http://localhost:4000/hospitals";
-                            const { data } = await Axios.get(url);
-                            console.log("First Hospital is " + data.document[0].userid);
-                            for (let i = 0; i < data.document.length; i++) {
-                                if (userData == data.document[i].userid) {
-                                    console.log("Current hospital id is " + data.document[i]._id);
-                                    localStorage.setItem("hospitalid", data.document[i]._id);
-                                    localStorage.setItem("hospitalname", data.document[i].hospitalname);
-                                    localStorage.setItem("billingname", data.document[i].billingname);
-                                    flag = 2;
-                                    console.log("flag is " + flag);
-                                    window.location = '/';
-
-
-
-                                }
-                                else if (i == data.document.length - 1 && userData != data.document[i].userid) {
-                                     window.loaction = '/registerhospital';
-                                    console.log("No Hospital Associated")
-
-                                }
-
-
-
-                            }
-                        }
-                        loadhos();
-                        console.log("flag is " + flag);
-
-                        //window.location = '/verify'
-                    }
-                    else if (values.email != data.document[a].email && values.password != data.document[a].password && (a == data.document.length -1)) {
-                        console.log("No Such User");
-                        setLoading(true);
-                        //alert("No Such User Exist");
-                        setOpen(true);
-                         //window.location = "/signup";
-
-                    }
-                }
-                console.log("flag is " + flag);
-
-
-
-            };
-            loadUsers();
-
-
-
+                const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+                const response = await Axios.get(`${BASE_URL}/users`);
+                const userData = response.data;
+                console.log("User data:", userData);
+                // Check for user authentication here...
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                setLoading(false);
+                setOpen(true);
+            }
             action.resetForm();
         },
     });
@@ -156,7 +90,6 @@ const Login = () => {
                                                 class="img-fluid"
                                                 alt=""
                                                 style={{ width: "200px" }}
-
                                             />
                                             <p class="text-center h1 fw-bold mb-5 mt-4">Login</p>
                                             <form onSubmit={handleSubmit}>
@@ -209,9 +142,6 @@ const Login = () => {
                                                         data-testid="loader"
                                                     />
                                                     <div className="row mt-3">
-
-
-
                                                         <Button
                                                             variant="primary"
                                                             size="lg"
@@ -219,13 +149,10 @@ const Login = () => {
                                                         >
                                                             Login
                                                         </Button>
-
                                                     </div>
                                                     <div className="row mt-3">
                                                         <br />
                                                         <div className="col text-center actionButtons">
-
-
                                                             <Button
                                                                 variant="outlined"
                                                                 size="lg"
@@ -238,8 +165,6 @@ const Login = () => {
                                                     <div className="row mt-3">
                                                         <br />
                                                         <div className="col text-center actionButtons">
-
-
                                                             <Button
                                                                 variant="primary"
                                                                 size="small"
@@ -250,11 +175,6 @@ const Login = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-
-
-
-
-
                                             </form>
                                         </div>
                                         <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
@@ -284,7 +204,6 @@ const Login = () => {
                                                     </Button>
                                                 </DialogActions>
                                             </Dialog>
-
                                         </div>
                                     </div>
                                 </div>
@@ -298,4 +217,3 @@ const Login = () => {
 };
 
 export default Login;
-

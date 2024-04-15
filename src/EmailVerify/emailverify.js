@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import success from "../assets/success.png";
 import styles from "./style.module.css";
-import { Fragment } from "react";
 
 const EmailVerify = () => {
 	const [validUrl, setValidUrl] = useState(true);
@@ -12,7 +11,8 @@ const EmailVerify = () => {
 	useEffect(() => {
 		const verifyEmailUrl = async () => {
 			try {
-				const url = `http://localhost:4000/api/users/${param.id}/verify/${param.token}`;
+				const BASE_URL = process.env.BASE_URL || "http://localhost:4000/api/users";
+				const url = `${BASE_URL}/${param.id}/verify/${param.token}`;
 				const { data } = await axios.get(url);
 				console.log(data);
 				setValidUrl(true);

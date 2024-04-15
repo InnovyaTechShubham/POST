@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -22,14 +21,6 @@ import { useState, CSSProperties } from 'react'
 function createData(name, batchno, unitcost, totalquantity, entrydate, manufacturingdate) {
   return { name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
 }
-
-
-
-
-
-
-
-
 
 function BufferStock() {
   const [history, setHistory] = useState([]);
@@ -72,14 +63,13 @@ function BufferStock() {
 
   const gethistory = async () => {
     try {
-
-      const url = `http://localhost:4000/stocks`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
       const productid = new Array(data.document.length)
       const unitcost = new Array(data.document.length)
-
       const totalquantity = new Array(data.document.length)
       const buffervalue = new Array(data.document.buffervalue);
       const entrydate = new Array(data.document.length)
@@ -87,79 +77,57 @@ function BufferStock() {
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
         if(data.document[i].hospitalid == hospitalid){
-        batchno[i] = data.document[i].batchno;
-        productid[i] = data.document[i].productid;
-        unitcost[i] = data.document[i].unitcost;
-
-        totalquantity[i] = data.document[i].totalquantity;
-        buffervalue[i] = data.document[i].buffervalue;
-        entrydate[i] = data.document[i].doe;
-        manufacturingdate[i] = data.document[i].dom;
-        a++;
+          batchno[i] = data.document[i].batchno;
+          productid[i] = data.document[i].productid;
+          unitcost[i] = data.document[i].unitcost;
+          totalquantity[i] = data.document[i].totalquantity;
+          buffervalue[i] = data.document[i].buffervalue;
+          entrydate[i] = data.document[i].doe;
+          manufacturingdate[i] = data.document[i].dom;
+          a++;
         }
-
-
-
       }
       setBatchNo(batchno);
       setUnitCost(unitcost);
       setTotalQuantity(totalquantity);
       setBufferValue(buffervalue);
       setDoe(entrydate);
-
       setDom(manufacturingdate);
-
       setProductId(productid);
-
-
     } catch (error) {
       console.log(error);
     }
-
   };
   gethistory();
 
 
-  const rows = [
-
-
-  ];
-
+  const rows = [];
 
 
   const getprodnew = async () => {
     try {
-
-      const url = `http://localhost:4000/products`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/products`;
       const { data } = await axios.get(url);
       const namearr = [];
-     
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
           if (productid[i] == data.document[j]._id) {
             namearr[i] = data.document[j].name;
-            
-
           }
-
-
         }
       }
       setName(namearr);
-      
-      console.log("DAta is ours", data);
-
+      console.log("Data is ours", data);
     } catch (error) {
       console.log(error);
     }
-
   };
 
 
   getprodnew();
 
 
-//Pushing The data into the Tables
   for (let i = 0; i < batchno.length; i++) {
     if((+totalquantity[i] <= +buffervalue[i]) && (+totalquantity[i] > 0)){
       rows.push(
@@ -195,7 +163,6 @@ function BufferStock() {
                     <h3>BUFFER STOCK</h3>
                   </div>
 
-                  
                   <div className='row' align-items-start>
                     <p class="text-right h3 mb-3 mt-4">FILTER</p>
                   </div>
@@ -236,13 +203,11 @@ function BufferStock() {
                 </div>
               </div>
             </div>
-
           </div>
-
         </section>
       </div >
     </main >
   )
 }
 
-export default BufferStock
+export default BufferStock;

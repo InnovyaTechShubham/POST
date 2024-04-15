@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -23,14 +22,6 @@ function createData(name, batchno, unitcost, totalquantity, entrydate, manufactu
   return { name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
 }
 
-
-
-
-
-
-
-
-
 function BufferStock() {
   const [history, setHistory] = useState([]);
   const [batchno, setBatchNo] = useState([]);
@@ -52,28 +43,29 @@ function BufferStock() {
   const [stockout, setStockOut] = useState(null);
 
   const [issuedlen, setIssuedlen] = useState(null);
+
   const handleTotal = () => {
     window.location = "/totalproduct"
   };
+
   const handleAvailaible = () => {
     window.location = "/availaibleproduct"
   };
+
   const handleBuffer = () => {
     window.location = "/bufferstock"
   };
+
   const handleStockOut = () => {
     window.location = "/stockout"
-  }
+  };
+
   const hospitalid = localStorage.getItem("hospitalid");
-  
-
-
-
 
   const gethistory = async () => {
     try {
-
-      const url = `http://localhost:4000/stocks`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
@@ -85,80 +77,53 @@ function BufferStock() {
       const manufacturingdate = new Array(data.document.length)
       let a = 0;
       for (let i = 0; i < data.document.length; i++) {
-        if(data.document[i].hospitalid == hospitalid){
-        batchno[i] = data.document[i].batchno;
-        productid[i] = data.document[i].productid;
-        unitcost[i] = data.document[i].unitcost;
-
-        totalquantity[i] = data.document[i].totalquantity;
-        buffervalue[i] = data.document[i].buffervalue;
-        entrydate[i] = data.document[i].doe;
-        manufacturingdate[i] = data.document[i].dom;
-        a++;
+        if(data.document[i].hospitalid === hospitalid){
+          batchno[i] = data.document[i].batchno;
+          productid[i] = data.document[i].productid;
+          unitcost[i] = data.document[i].unitcost;
+          totalquantity[i] = data.document[i].totalquantity;
+          buffervalue[i] = data.document[i].buffervalue;
+          entrydate[i] = data.document[i].doe;
+          manufacturingdate[i] = data.document[i].dom;
+          a++;
         }
-
-
-
       }
       setBatchNo(batchno);
       setUnitCost(unitcost);
       setTotalQuantity(totalquantity);
       setBufferValue(buffervalue);
       setDoe(entrydate);
-
       setDom(manufacturingdate);
-
       setProductId(productid);
-
-
     } catch (error) {
       console.log(error);
     }
-
   };
   gethistory();
 
-
-  const rows = [
-
-
-  ];
-
-
+  const rows = [];
 
   const getprodnew = async () => {
     try {
-
-      const url = `http://localhost:4000/products`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/products`;
       const { data } = await axios.get(url);
       const namearr = [];
-     
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
-          if (productid[i] == data.document[j]._id) {
+          if (productid[i] === data.document[j]._id) {
             namearr[i] = data.document[j].name;
-            
-
           }
-
-
         }
       }
       setName(namearr);
-      
-      console.log("DAta is ours", data);
-
+      console.log("Data is ours", data);
     } catch (error) {
       console.log(error);
     }
-
   };
-
-
   getprodnew();
 
-
-//Pushing The data into the Tables
   for (let i = 0; i < batchno.length; i++) {
     if(+totalquantity[i] < 1){
       rows.push(
@@ -171,13 +136,8 @@ function BufferStock() {
           dom[i],
         )
       );
-
     }
-   
   }
-
-
-
 
   return (
     <main className='main-container'>
@@ -193,12 +153,9 @@ function BufferStock() {
                   <div className='main-title'>
                     <h3>STOCK OUT PRODUCTS</h3>
                   </div>
-
-                  
                   <div className='row' align-items-start>
                     <p class="text-right h3 mb-3 mt-4">FILTER</p>
                   </div>
-
                   <TableContainer component={Paper} className="table table-primary">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
@@ -230,18 +187,15 @@ function BufferStock() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-
                   <Button variant="text">Load More</Button>
                 </div>
               </div>
             </div>
-
           </div>
-
         </section>
-      </div >
-    </main >
+      </div>
+    </main>
   )
 }
 
-export default BufferStock
+export default BufferStock;

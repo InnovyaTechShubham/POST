@@ -66,12 +66,15 @@ const StockIssue = () => {
 
     const getprod = async () => {
         try {
+            const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+            const { data } = await axios.get(`${BASE_URL}/products`);
 
-            const url = `http://localhost:4000/products`;
-            const { data } = await axios.get(url);
+            // const url = `http://localhost:4000/products`;
+            // const { data } = await axios.get(url);
 
             const url1 = `http://localhost:4000/stocks`;
-            const { data1 } = await axios.get(url1);
+            const { data1 } = await axios.get(`${BASE_URL}/stocks`);
+            // const { data1 } = await axios.get(url1);
 
 
             const prodnamesarray = new Array(data.document.length)
@@ -124,8 +127,11 @@ const StockIssue = () => {
 
     const getstock = async () => {
         try {
-            const url = `http://localhost:4000/stocks`;
-            const { data } = await axios.get(url,);
+            const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+            const { data } = await axios.get(`${BASE_URL}/stocks`);
+
+            // const url = `http://localhost:4000/stocks`;
+            // const { data } = await axios.get(url,);
             for (let i = 0; i < data.document.length; i++) {
                 if (id == data.document[i].productid) {
                     setStockId(data.document[i]._id);
@@ -143,9 +149,12 @@ const StockIssue = () => {
 
     const getdep = async () => {
         try {
+            const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+            // const { data } = await axios.get(`${BASE_URL}/departments`);
 
-            const url = `http://localhost:4000/departments`;
-            const { data } = await axios.get(url);
+            // const url = `http://localhost:4000/departments`;
+            const { data } = await axios.get(`${BASE_URL}/departments`);
+            // const { data } = await axios.get(url);
             for (let a = 0; a < data.document.length; a++) {
                 if (data.document[a].hospitalid == hospitalid) {
                     let len = JSON.parse(data.document[a].department).length;
@@ -154,7 +163,6 @@ const StockIssue = () => {
                         deplist[i] = JSON.parse(data.document[a].department)[i];
                     }
                     setDepartment(deplist)
-
 
                 }
 
@@ -238,14 +246,25 @@ const StockIssue = () => {
                     setLoading(true);
                     if (values.quantityissued <= +maxquantity) {
                         const remainingquanity = -(values.quantityissued - +maxquantity);
-                        const response = await Axios.post("http://localhost:4000/postissues", stock);
-                        const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+
+                        const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+                        const response = await axios.post(`${BASE_URL}/postissues`, stock);
+
+                        // const response = await Axios.post("http://localhost:4000/postissues", stock);
+                        // const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                        const historyresponse = await axios.post(`${BASE_URL}/posthistory`, history);
                         try {
-                            const res = await axios.put('http://localhost:4000/updatestocks/' + stockid, {
+                            const res = await axios.put(`${BASE_URL}/updatestocks` + stockid, {
                                 _id: stockid,
                                 totalquantity: remainingquanity,
 
                             });
+
+                            // const res = await axios.put('http://localhost:4000/updatestocks/' + stockid, {
+                            //     _id: stockid,
+                            //     totalquantity: remainingquanity,
+
+                            // });
 
                         } catch (error) {
                             alert("Error Issuing Stock")

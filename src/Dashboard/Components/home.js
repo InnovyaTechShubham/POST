@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -22,14 +21,6 @@ import { useState, CSSProperties } from 'react'
 function createData(date, action, type, product, quantity, emergencytype) {
   return { date, action, type, product, quantity, emergencytype };
 }
-
-
-
-
-
-
-
-
 
 function Home() {
   const [history, setHistory] = useState([]);
@@ -63,11 +54,11 @@ function Home() {
     window.location = "/stockout"
   };
 
-  //+1 AFTER ENTERING THE NEW PRODUCT
   const getprod = async () => {
     try {
       let productlength = 0;
-      const url = `http://localhost:4000/products`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/products`;
       const { data } = await axios.get(url);
       for(let a = 0;a < data.document.length;a++){
         if(data.document[a].hospitalid == hospitalid){
@@ -81,11 +72,12 @@ function Home() {
     }
 
   };
-  //+1 AFTER A STOCK OF PRODUCT IS ENTERED
+
   const getstock = async () => {
     try {
       let stocklen = 0;
-      const url = `http://localhost:4000/stocks`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/stocks`;
       const { data } = await axios.get(url);
       for(let a = 0;a < data.document.length;a++){
         if(data.document[a].hospitalid == hospitalid){
@@ -105,8 +97,8 @@ function Home() {
 
   const getbufferstock = async () => {
     try {
-
-      const url = `http://localhost:4000/stocks`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/stocks`;
       const { data } = await axios.get(url);
       let buffer = 0;
       let out = 0;
@@ -137,7 +129,8 @@ function Home() {
   const getissued = async () => {
     try {
       const issuelen = 0;
-      const url = `http://localhost:4000/issueds`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/issueds`;
       const { data } = await axios.get(url);
       for(let a = 0;a < data.document.length;a++){
         if(data.document[a].hospitalid == hospitalid){
@@ -162,7 +155,8 @@ function Home() {
   const gethistory = async () => {
     try {
 
-      const url = `http://localhost:4000/history`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/history`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const date = new Array(data.document.length)
@@ -194,17 +188,14 @@ function Home() {
   gethistory();
 
 
-  const rows = [
-
-
-  ];
-
+  const rows = [];
 
 
   const getprodnew = async () => {
     try {
 
-      const url = `http://localhost:4000/products`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/products`;
       const { data } = await axios.get(url);
       const namearr = [];
       const typoarr = [];
@@ -218,14 +209,12 @@ function Home() {
             emergencyarr[a] = data.document[j].emergencytype;
             a++;
           }
-
-
         }
       }
       setName(namearr);
       setEmergency(emergencyarr);
       setAction(typoarr);
-      console.log("DAta is ours", data);
+      console.log("Data is ours", data);
 
     } catch (error) {
       console.log(error);
@@ -237,7 +226,6 @@ function Home() {
   getprodnew();
 
 
-//Pushing The data into the Tables
   for (let i = 0; i < date.length ; i++) {
     rows.push(
       createData(
@@ -362,4 +350,4 @@ function Home() {
   )
 }
 
-export default Home
+export default Home;

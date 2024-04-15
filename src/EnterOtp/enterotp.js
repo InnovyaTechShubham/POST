@@ -1,7 +1,6 @@
-import { useEffect,useState, React, CSSProperties } from 'react'
+import { useEffect, useState, React, CSSProperties } from 'react'
 import { useFormik } from "formik";
 import ClipLoader from "react-spinners/ClipLoader";
-
 import { Button } from "react-bootstrap";
 import { loginAuth } from "./LoginAuth.js";
 import axios from "axios";
@@ -11,27 +10,24 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import LoaderOverlay from '../Loader/LoaderOverlay.js';
+import { useParams, Link, useNavigate } from "react-router-dom";
 
-
-import { useParams, Link,useNavigate } from "react-router-dom";
 const initialValues = {
     email: "",
 };
+
 const override: CSSProperties = {
     display: "block",
     margin: "0 auto",
     borderColor: "red",
 };
 
-
-
-
-
 const EnterOtp = () => {
     const param = useParams();
     const [open, setOpen] = useState(false);
-    let [loading, setLoading] = useState(false);
-    let [color, setColor] = useState("#ffffff");
+    const [loading, setLoading] = useState(false);
+    const [color, setColor] = useState("#ffffff");
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -39,14 +35,15 @@ const EnterOtp = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
     const navigate = useNavigate();
     const navigateToVerify = () => {
         navigate('/registerhospital');
     }
- 
-const otp = localStorage.getItem("token");
-const id = localStorage.getItem("id");
-const code = otp.toString();
+
+    const otp = localStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    const code = otp.toString();
 
     const {
         values,
@@ -55,59 +52,33 @@ const code = otp.toString();
         handleBlur,
         handleChange,
         handleSubmit,
-     
         resetForm,
     } = useFormik({
         initialValues,
         validationSchema: loginAuth,
-        onSubmit: (values, action) => {
-           // console.log(JSON.parse(localStorage.getItem('token')));
-           
-         
-          if(values.email == code.substring(1,5)){
-
-                        try {
-                            const verifyEmailUrl = async () => {
-                                try {
-                                    setLoading(true);
-                                    const url = `http://localhost:4000/api/users/${id}/verify/${otp}`;
-                                    const { data } = await axios.get(url);
-                                    console.log(data);
-                                   // window.location = "/"
-                                    handleClickOpen();
-                                    setLoading(false);
-                                } catch (error) {
-                                    console.log(error);
-                                }
-                               
-                            };
-
-                            verifyEmailUrl();
-                           // window.location = "/"
-                            
-                        } catch (error) {
-                            console.log(error);
-                            alert("Error Verifying")
-                        }
-                
-          }  
-          else{
-           alert("Code MisMatch")
-          }
-
-            
-
-			
-            
-
-             action.resetForm();
+        onSubmit: async (values, action) => {
+            if (values.email === code.substring(1, 5)) {
+                try {
+                    setLoading(true);
+                    const BASE_URL = process.env.BASE_URL || "http://localhost:4000/api/users";
+                    const url = `${BASE_URL}/${id}/verify/${otp}`;
+                    const { data } = await axios.get(url);
+                    console.log(data);
+                    handleClickOpen();
+                    setLoading(false);
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                alert("Code MisMatch");
+            }
+            action.resetForm();
         },
     });
-  
 
     return (
         <div>
-              <LoaderOverlay loading={loading}/>
+            <LoaderOverlay loading={loading}/>
             <section
                 class="p-5 w-100"
                 style={{ backgroundColor: "#eee", borderRadius: ".5rem .5rem 0 0" }}
@@ -123,56 +94,41 @@ const code = otp.toString();
                                             class="img-fluid"
                                             alt=""
                                             style={{ width: "200px" }}
-
                                         />
                                         <p class="text-center h1 fw-bold mb-5 mt-4">Verify</p>
                                         <form onSubmit={handleSubmit}>
-                                            
-                                                <div className="row mt-3">
-                                                    <label htmlFor="first" className="form-label">
-                                                        Verification Code*
-                                                    </label>
-                                                    <input
-                                                        id="email"
-                                                        name="email"
-                                                        className="form-control"
-                                                        value={values.email}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        type="email"
-                                                    />
-                                                    {errors.email && touched.email ? (
-                                                        <small className="text-danger mt-1">
-                                                            {errors.email}
-                                                        </small>
-                                                    ) : null}
-                                                </div>
-                                              
-                                        
-                                            
-                                           
-                                           
-                                            
-                                           
                                             <div className="row mt-3">
-                                               
-                                                   
-
-                                                    <Button
-                                                        variant="primary"
-                                                        size="lg"
-                                                        onClick={handleSubmit}
-                                                    >
-                                                        Verify
-                                                    </Button>
-                                                
+                                                <label htmlFor="first" className="form-label">
+                                                    Verification Code*
+                                                </label>
+                                                <input
+                                                    id="email"
+                                                    name="email"
+                                                    className="form-control"
+                                                    value={values.email}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    type="email"
+                                                />
+                                                {errors.email && touched.email ? (
+                                                    <small className="text-danger mt-1">
+                                                        {errors.email}
+                                                    </small>
+                                                ) : null}
+                                            </div>
+                                            <div className="row mt-3">
+                                                <Button
+                                                    variant="primary"
+                                                    size="lg"
+                                                    onClick={handleSubmit}
+                                                >
+                                                    Verify
+                                                </Button>
                                             </div>
                                             <div className="row mt-3">
                                                 <br />
                                                 <div className="col text-center actionButtons">
-                                                  
-                                                   
-                                                     <Button
+                                                    <Button
                                                         variant="outlined"
                                                         size="lg"
                                                         onClick={navigateToVerify}
@@ -180,26 +136,26 @@ const code = otp.toString();
                                                         Skip Verification
                                                     </Button>
                                                     <Dialog
-                                                open={open}
-                                                onClose={handleClose}
-                                                aria-labelledby="alert-dialog-title"
-                                                aria-describedby="alert-dialog-description"
-                                            >
-                                                <DialogTitle id="alert-dialog-title">
-                                                    {"Email is Verified"}
-                                                </DialogTitle>
-                                                <DialogContent>
-                                                    <DialogContentText id="alert-dialog-description">
-                                                        Email Verified Successfully
-                                                    </DialogContentText>
-                                                </DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleClose}>Ok</Button>
-                                                    <Button onClick={navigateToVerify} autoFocus>
-                                                        Continue
-                                                    </Button>
-                                                </DialogActions>
-                                            </Dialog>
+                                                        open={open}
+                                                        onClose={handleClose}
+                                                        aria-labelledby="alert-dialog-title"
+                                                        aria-describedby="alert-dialog-description"
+                                                    >
+                                                        <DialogTitle id="alert-dialog-title">
+                                                            {"Email is Verified"}
+                                                        </DialogTitle>
+                                                        <DialogContent>
+                                                            <DialogContentText id="alert-dialog-description">
+                                                                Email Verified Successfully
+                                                            </DialogContentText>
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button onClick={handleClose}>Ok</Button>
+                                                            <Button onClick={navigateToVerify} autoFocus>
+                                                                Continue
+                                                            </Button>
+                                                        </DialogActions>
+                                                    </Dialog>
                                                 </div>
                                             </div>
                                         </form>

@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -27,14 +26,6 @@ import { useState, CSSProperties } from 'react'
 function createData(hospitalname, address, ceanumber, phone, state, district) {
   return { hospitalname, address, ceanumber, phone, state, district };
 }
-
-
-
-
-
-
-
-
 
 function TotalHospital() {
   const [id, setId] = useState([]);
@@ -70,17 +61,13 @@ function TotalHospital() {
   };
   
 
-  const rows = [
+  const rows = [];
 
-
-  ];
-
-
+  const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
 
   const gethospital = async () => {
     try {
-
-      const url = `http://localhost:4000/hospitals`;
+      const url = `${BASE_URL}/hospitals`;
       const { data } = await axios.get(url);
       const id = new Array(data.document.length)
       const hospitalname = new Array(data.document.length)
@@ -90,17 +77,14 @@ function TotalHospital() {
       const state = new Array(data.document.length)
       const district = new Array(data.document.length)
 
-
-      
-     
       for (let i = 0; i < data.document.length; i++) {
-            id[i] = data.document[i].id;
-            hospitalname[i] = data.document[i].hospitalname;
-            address[i] = data.document[i].address;
-            ceanumber[i] = data.document[i].ceanumber;
-            phone[i] = data.document[i].phone;
-            state[i] = data.document[i].state;
-            district[i] = data.document[i].district;
+        id[i] = data.document[i].id;
+        hospitalname[i] = data.document[i].hospitalname;
+        address[i] = data.document[i].address;
+        ceanumber[i] = data.document[i].ceanumber;
+        phone[i] = data.document[i].phone;
+        state[i] = data.document[i].state;
+        district[i] = data.document[i].district;
       }
       setId(id);
       setHospitalName(hospitalname);
@@ -109,41 +93,26 @@ function TotalHospital() {
       setPhone(phone);
       setState(state);
       setDistrict(district);
-
-      
-      
-      console.log("DAta is ours", data);
-
+      console.log("Data is ours", data);
     } catch (error) {
       console.log(error);
     }
-
   };
-
 
   gethospital();
 
-
-//Pushing The data into the Tables
   for (let i = 0; i < id.length; i++) {
-    
-      rows.push(
-        createData(
-          hospitalname[i],
-          address[i],
-          ceanumber[i],
-          phone[i],
-          state[i],
-          district[i],
-        )
-      );
-
-    
-   
+    rows.push(
+      createData(
+        hospitalname[i],
+        address[i],
+        ceanumber[i],
+        phone[i],
+        state[i],
+        district[i],
+      )
+    );
   }
-
-
-
 
   return (
     <main className='main-container'>
@@ -160,7 +129,6 @@ function TotalHospital() {
                     <h3>HOSPITAL DETAILS</h3>
                   </div>
 
-                  
                   <div className='row' align-items-start>
                     <p class="text-right h3 mb-3 mt-4">FILTER</p>
                   </div>
@@ -183,7 +151,6 @@ function TotalHospital() {
                             key={row.name}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             onClick={(event) => handleClickOpen(row)}
-
                           >
                             <TableCell align="right" component="th" scope="row">
                               {row.hospitalname}
@@ -204,7 +171,7 @@ function TotalHospital() {
               </div>
             </div>
             <Dialog open={open} onClose={handleClose} >       
-                   <DialogTitle>Hospital Details</DialogTitle>
+              <DialogTitle>Hospital Details</DialogTitle>
               <DialogContent>
                 <DialogContentText>
                   Hospital Name: {selectedHospital.hospitalname}
@@ -229,9 +196,7 @@ function TotalHospital() {
                 <Button onClick={handleClose}>Close</Button>
               </DialogActions>
             </Dialog>
-
           </div>
-
         </section>
       </div >
     </main >

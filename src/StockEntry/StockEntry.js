@@ -71,8 +71,8 @@ const StockEntry = () => {
 
     const getstock = async () =>{
         try{
-             const url = `http://localhost:4000/stocks`;
-            const { data } = await axios.get(url);
+            const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+            const { data } = await Axios.post(`${BASE_URL}/stocks`);
             const stockarray = new Array(data.document.length);
             const stockproductarray = new Array(data.document.length);
             const existquantity = new Array(data.document.length);
@@ -102,10 +102,12 @@ const StockEntry = () => {
 
     const getprod = async () => {
         try {
+            const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+            const { data } = await Axios.get(`${BASE_URL}/products`);
             
-            const url = `http://localhost:4000/products`;
-            const { data } = await axios.get(url);
-           
+            // const url = `http://localhost:4000/products`;
+            // const { data } = await axios.get(url);
+            
              const prodnamesarray = new Array(data.document.length)
              const cat = new Array(data.document.length)
              const type = new Array(data.document.length)
@@ -239,8 +241,13 @@ const StockEntry = () => {
                 console.log("Exist flag "+exist);
                 if(exist == 0){
                     const loadUsers = async () => {
-                        const response = await Axios.post("http://localhost:4000/poststocks", stock);
-                        const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                        const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+                        const response = await Axios.get(`${BASE_URL}/poststocks`, stock);
+                        // const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+                        const historyresponse = await Axios.get(`${BASE_URL}/posthistory`, history);
+
+                        // const response = await Axios.post("http://localhost:4000/poststocks", stock);
+                        // const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
                         let userData = (await response).data;
                         //let id = (await response).data.id;
                         console.log(response);
@@ -274,7 +281,8 @@ const StockEntry = () => {
                  
                     const loadUsers = async () => {
                         try {
-                            const res = await axios.put('http://localhost:4000/updateexistingstocks/' + currst.toString(), {
+                            const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+                            const res = await axios.put(`${BASE_URL}/updateexistingstocks`, + currst.toString(), {
                                 _id: currst.toString(),
                                 // productid: id,
                                  batchno: values.batchno,
@@ -286,7 +294,22 @@ const StockEntry = () => {
 
 
                             });
-                            const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
+
+                            // const res = await axios.put('http://localhost:4000/updateexistingstocks/' + currst.toString(), {
+                            //     _id: currst.toString(),
+                            //     // productid: id,
+                            //      batchno: values.batchno,
+                            //      unitcost: values.unitcost,
+                            //     totalquantity: updatedquantity,
+                            //      buffervalue: updatedquantity * 0.15,
+                            //      doe: doe,
+                            //      dom: dom,
+
+
+                            // });
+                            
+                            const historyresponse = await axios.post(`${BASE_URL}/posthistory`,history);
+                            // const historyresponse = await Axios.post("http://localhost:4000/posthistory", history);
                             window.location = '/stockentry'
                         // setLoading(false);
                         // handleClickOpen();

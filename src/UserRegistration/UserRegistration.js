@@ -102,7 +102,13 @@ const UserRegistration = () => {
                 console.log("2")
                 const loadUsers = async () => {
                      setLoading(true);
-                     const response = await Axios.post("http://localhost:4000/api/users",post);
+                        const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+                        // const url = `${BASE_URL}/products`;
+                        // const { data } = await Axios.get(url);
+                    
+                    const response = await Axios.post(`${BASE_URL}/api/users`, post);
+
+                    //  const response = await Axios.post("http://localhost:4000/api/users",post);
                      let userData = (await response).data.token;
                      let id = (await response).data.id;
                      console.log(userData);

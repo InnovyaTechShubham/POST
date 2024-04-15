@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -22,14 +21,6 @@ import { useState, CSSProperties } from 'react'
 function createData(hospital, name, batchno, unitcost, totalquantity, entrydate, manufacturingdate) {
   return { hospital, name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
 }
-
-
-
-
-
-
-
-
 
 function StockOutSema() {
   const [history, setHistory] = useState([]);
@@ -55,7 +46,6 @@ function StockOutSema() {
   const [bufferstock,setBufferStock] = useState(null);
   const [stockout, setStockOut] = useState(null);
 
-  const [issuedlen, setIssuedlen] = useState(null);
   const handleTotal = () => {
     window.location = "/totalproduct"
   };
@@ -69,153 +59,105 @@ function StockOutSema() {
     window.location = "/stockout"
   }
   
+  const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
 
-
-
+  const rows = [];
 
   const gethistory = async () => {
     try {
-
-      const url = `http://localhost:4000/stocks`;
+      const url = `${BASE_URL}/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
-      const batchno = new Array(data.document.length)
-      const hospitalid = new Array(data.document.length)
-
-      const productid = new Array(data.document.length)
-      const unitcost = new Array(data.document.length)
-
-      const totalquantity = new Array(data.document.length)
+      const batchno = new Array(data.document.length);
+      const hospitalid = new Array(data.document.length);
+      const productid = new Array(data.document.length);
+      const unitcost = new Array(data.document.length);
+      const totalquantity = new Array(data.document.length);
       const buffervalue = new Array(data.document.buffervalue);
-      const entrydate = new Array(data.document.length)
-      const manufacturingdate = new Array(data.document.length)
+      const entrydate = new Array(data.document.length);
+      const manufacturingdate = new Array(data.document.length);
 
       for (let i = 0; i < data.document.length; i++) {
         batchno[i] = data.document[i].batchno;
         productid[i] = data.document[i].productid;
         hospitalid[i] = data.document[i].hospitalid;
-
         unitcost[i] = data.document[i].unitcost;
-
         totalquantity[i] = data.document[i].totalquantity;
         buffervalue[i] = data.document[i].buffervalue;
         entrydate[i] = data.document[i].doe;
         manufacturingdate[i] = data.document[i].dom;
-
-
-
-
       }
       setBatchNo(batchno);
       setUnitCost(unitcost);
       setTotalQuantity(totalquantity);
       setBufferValue(buffervalue);
       setDoe(entrydate);
-
       setDom(manufacturingdate);
-
       setProductId(productid);
       setHospitalId(hospitalid);
-
-
     } catch (error) {
       console.log(error);
     }
-
   };
   gethistory();
 
-
-  const rows = [
-
-
-  ];
-
-
+  const rows = [];
 
   const getprodnew = async () => {
     try {
-
-      const url = `http://localhost:4000/products`;
+      const url = `${BASE_URL}/products`;
       const { data } = await axios.get(url);
       const namearr = [];
-     
+
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
           if (productid[i] == data.document[j]._id) {
             namearr[i] = data.document[j].name;
-            
-
           }
-
-
         }
       }
       setName(namearr);
-      
-      console.log("DAta is ours", data);
-
     } catch (error) {
       console.log(error);
     }
-
   };
-
-
   getprodnew();
 
   const gethospital = async () => {
     try {
-
-      const url = `http://localhost:4000/hospitals`;
+      const url = `${BASE_URL}/hospitals`;
       const { data } = await axios.get(url);
       const hospital = [];
-     
+
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
           if (hospitalid[i] == data.document[j]._id) {
             hospital[i] = data.document[j].hospitalname;
-            
-
           }
-
-
         }
       }
       setHospital(hospital);
-      
-      console.log("DAta is ours", data);
-
     } catch (error) {
       console.log(error);
     }
-
   };
-
   gethospital();
 
-
-//Pushing The data into the Tables
-for (let i = 0; i < batchno.length; i++) {
-  if(+totalquantity[i] < 1){
-    rows.push(
-      createData(
-        hospital[i],
-        name[i],
-        batchno[i],
-        unitcost[i],
-        totalquantity[i],
-        doe[i],
-        dom[i],
-      )
-    );
-
+  for (let i = 0; i < batchno.length; i++) {
+    if (+totalquantity[i] < 1) {
+      rows.push(
+        createData(
+          hospital[i],
+          name[i],
+          batchno[i],
+          unitcost[i],
+          totalquantity[i],
+          doe[i],
+          dom[i]
+        )
+      );
+    }
   }
- 
-}
-
-
-
 
   return (
     <main className='main-container'>
@@ -241,8 +183,7 @@ for (let i = 0; i < batchno.length; i++) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                       <TableHead>
                         <TableRow>
-                        <TableCell align="right">HOSPITAL</TableCell>
-
+                          <TableCell align="right">HOSPITAL</TableCell>
                           <TableCell align="right">PRODUCT</TableCell>
                           <TableCell align="right">BATCH NO</TableCell>
                           <TableCell align="right">UNIT COST</TableCell>
@@ -261,7 +202,6 @@ for (let i = 0; i < batchno.length; i++) {
                               {row.hospital}
                             </TableCell>
                             <TableCell align="right">{row.name}</TableCell>
-
                             <TableCell align="right">{row.batchno}</TableCell>
                             <TableCell align="right">{row.unitcost}</TableCell>
                             <TableCell align="right">{row.totalquantity}</TableCell>

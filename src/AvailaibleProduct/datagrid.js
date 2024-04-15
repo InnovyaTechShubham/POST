@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -22,14 +21,6 @@ import { useState, CSSProperties } from 'react'
 function createData(name, batchno, unitcost, totalquantity, entrydate, manufacturingdate) {
   return { name, batchno, unitcost, totalquantity, entrydate, manufacturingdate };
 }
-
-
-
-
-
-
-
-
 
 function AvailaibleProduct() {
   const [history, setHistory] = useState([]);
@@ -72,14 +63,13 @@ function AvailaibleProduct() {
 
   const getstocks = async () => {
     try {
-
-      const url = `http://localhost:4000/stocks`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/stocks`;
       const { data } = await axios.get(url);
       console.log("History is: ", data);
       const batchno = new Array(data.document.length)
       const productid = new Array(data.document.length)
       const unitcost = new Array(data.document.length)
-
       const totalquantity = new Array(data.document.length)
       const entrydate = new Array(data.document.length)
       const manufacturingdate = new Array(data.document.length)
@@ -87,97 +77,68 @@ function AvailaibleProduct() {
       for (let i = 0; i < data.document.length; i++) {
         if(data.document[i].hospitalid == hospitalid){
           if(+data.document[i].totalquantity != 0){
-        batchno[a] = data.document[i].batchno;
-        productid[a] = data.document[i].productid;
-        unitcost[a] = data.document[i].unitcost;
-
-        totalquantity[a] = data.document[i].totalquantity;
-        entrydate[a] = data.document[i].doe;
-        manufacturingdate[a] = data.document[i].dom;
-          a++;
-
+            batchno[a] = data.document[i].batchno;
+            productid[a] = data.document[i].productid;
+            unitcost[a] = data.document[i].unitcost;
+            totalquantity[a] = data.document[i].totalquantity;
+            entrydate[a] = data.document[i].doe;
+            manufacturingdate[a] = data.document[i].dom;
+            a++;
+          }
         }
-      }
-
       }
       setBatchNo(batchno);
       setUnitCost(unitcost);
       setTotalQuantity(totalquantity);
       setDoe(entrydate);
-
       setDom(manufacturingdate);
-
       setProductId(productid);
-
-
     } catch (error) {
       console.log(error);
     }
-
   };
   getstocks();
 
 
-  const rows = [
-
-
-  ];
-
+  const rows = [];
 
 
   const getprodnew = async () => {
     try {
-
-      const url = `http://localhost:4000/products`;
+      const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+      const url = `${BASE_URL}/products`;
       const { data } = await axios.get(url);
       const namearr = [];
-     
       for (let i = 0; i < batchno.length; i++) {
         for (let j = 0; j < data.document.length; j++) {
           if (productid[i] == data.document[j]._id) {
-            
             namearr[i] = data.document[j].name;
-            
-
           }
-
-
         }
       }
       setName(namearr);
-      
-      console.log("DAta is ours", data);
-
+      console.log("Data is ours", data);
     } catch (error) {
       console.log(error);
     }
-
   };
 
 
   getprodnew();
 
 
-//Pushing The data into the Tables
   for (let i = 0; i < batchno.length; i++) {
-    
-      rows.push(
-        createData(
-          name[i],
-          batchno[i],
-          unitcost[i],
-          totalquantity[i],
-          doe[i],
-          dom[i],
-        )
-      );
-
-    
-   
+    rows.push(
+      createData(
+        name[i],
+        batchno[i],
+        unitcost[i],
+        totalquantity[i],
+        doe[i],
+        dom[i],
+      )
+    );
   }
-
-
-
 
   return (
     <main className='main-container'>
@@ -194,7 +155,6 @@ function AvailaibleProduct() {
                     <h3>AVAILAIBLE PRODUCTS IN STOCK</h3>
                   </div>
 
-                  
                   <div className='row' align-items-start>
                     <p class="text-right h3 mb-3 mt-4">FILTER</p>
                   </div>
@@ -235,9 +195,7 @@ function AvailaibleProduct() {
                 </div>
               </div>
             </div>
-
           </div>
-
         </section>
       </div >
     </main >
